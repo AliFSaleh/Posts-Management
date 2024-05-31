@@ -4,7 +4,14 @@ export default {
       port: 'POSTGRES_PORT',
       username: 'POSTGRES_USER',
       password: 'POSTGRES_PASSWORD',
-      database: 'POSTGRES_DB',
+      database: 'DB_NAME',
     },
+    
+    origin: 'ORIGIN',
+    accessTokenExpiresIn: 'ACCESS_TOKEN_EXPIRES_IN',
+    refreshTokenExpiresIn: 'REFRESH_TOKEN_EXPIRES_IN',
+    emailFrom: 'EMAIL_FROM',
+
+    jwtAccessToken: 'JWT_SECRET_TOKEN',
   };
   
