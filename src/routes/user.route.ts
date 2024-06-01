@@ -1,25 +1,10 @@
 import express from 'express'
-import {
-    login,
-    registerHandler,
-    logout,
-    test
-} from '../controllers/auth.controller'
-import {createUserSchema} from '../schemas/user.schema'
-import { validate } from '../middlewares/validate'
 import {deserializeUser} from '../middlewares/deserializeUser'
+import { getMyProfile } from '../controllers/users.controller'
 
 const router = express.Router()
 
-router.route('/register')
-        .post(validate(createUserSchema), registerHandler)
-router.route('/login')
-        .post(login)
-router.route('/logout')
-        .post(deserializeUser, logout)
-
-        
-router.route('/test')
-        .post(test)
+router.route('/me')
+        .get(deserializeUser, getMyProfile)
 
 export default router

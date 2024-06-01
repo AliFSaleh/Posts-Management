@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { AppDataSource } from './utils/data-source';
 
-import authRouter from './routes/user.route'
+import authRouter from './routes/auth.route'
+import userRouter from './routes/user.route'
 import AppError from './utils/appError';
 
 AppDataSource.initialize().then(() => {
@@ -22,6 +23,7 @@ AppDataSource.initialize().then(() => {
     }))
 
     app.use('/api/auth', authRouter)
+    app.use('/api/users', userRouter)
 
     
     app.all('*', (req: Request, res: Response, next: NextFunction) => {
