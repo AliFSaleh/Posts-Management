@@ -26,6 +26,8 @@ AppDataSource.initialize().then(() => {
         credentials: true
     }))
 
+    app.use('/storage', express.static('src/uploads'))
+
     app.use('/api/auth', authRouter)
     app.use('/api/users', userRouter)
     app.use('/api/posts', postRouter)
@@ -34,6 +36,19 @@ AppDataSource.initialize().then(() => {
     app.all('*', (req: Request, res: Response, next: NextFunction) => {
         next(new AppError(404, `Route ${req.originalUrl} not found`))
     })
+
+    // GLOBAL ERROR HANDLER
+    app.use(
+        (error: AppError, req: Request, res: Response, next: NextFunction) => {
+          error.status = error.status || 'error';
+          error.statusCode = error.statusCode || 500;
+  
+          res.status(error.statusCode).json({
+            status: error.status,
+            message: error.message,
+          });
+        }
+    );
 
     app.listen(port, ()=>{
         console.log(`Server is listening on port ${port}`);
