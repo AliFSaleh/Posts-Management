@@ -8,6 +8,8 @@ import { AppDataSource } from './utils/data-source';
 
 import authRouter from './routes/auth.route'
 import userRouter from './routes/user.route'
+import postRouter from './routes/post.route'
+
 import AppError from './utils/appError';
 
 AppDataSource.initialize().then(() => {
@@ -16,7 +18,9 @@ AppDataSource.initialize().then(() => {
 
     app.use(bodyParser.json())
     app.use(cookieParser())
-
+    // handle the form data
+    app.use(express.urlencoded({ extended: true }))
+    
     app.use(cors({
         origin: config.get<string>('origin'),
         credentials: true
@@ -24,6 +28,7 @@ AppDataSource.initialize().then(() => {
 
     app.use('/api/auth', authRouter)
     app.use('/api/users', userRouter)
+    app.use('/api/posts', postRouter)
 
     
     app.all('*', (req: Request, res: Response, next: NextFunction) => {

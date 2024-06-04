@@ -2,11 +2,13 @@ import {
     Entity,
     Column,
     BeforeInsert,
-    Index
+    Index,
+    OneToMany
 } from 'typeorm'
 import model from './model.entity';
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
+import { Post } from './posts.entity';
 
 export enum RoleEnumType {
     USER = 'user',
@@ -49,6 +51,9 @@ export class User extends model {
         nullable: true,
     })
     verificationCode!: string | null
+
+    @OneToMany(() => Post, (post) => post.user)
+    posts: Post[]
 
     @BeforeInsert()
     async hasPassword(){
