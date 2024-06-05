@@ -59,7 +59,14 @@ export const getPostsHandler = async(
     next: NextFunction
 ) => {
     try {
-        const posts = await findPosts({}, {}, {});
+        const {title, content} = req.query
+        let whereClause = {}
+        if(title as string)
+          whereClause = {...whereClause, title}
+        if(content as string)
+          whereClause = {...whereClause, content}
+        
+        const posts = await findPosts(whereClause, {}, {});
     
         res.status(200).json({
           status: 'success',
