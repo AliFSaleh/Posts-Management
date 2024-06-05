@@ -2,6 +2,7 @@ require('dotenv').config()
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import config from 'config'
+import path from 'path'
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { AppDataSource } from './utils/data-source';
@@ -16,9 +17,11 @@ AppDataSource.initialize().then(() => {
     const app = express();
     const port = process.env.APP_PORT
 
+    app.set('view engine', 'pug');
+    app.set('views', path.join(__dirname, `/views`));
+
     app.use(bodyParser.json())
     app.use(cookieParser())
-    // handle the form data
     app.use(express.urlencoded({ extended: true }))
     
     app.use(cors({
@@ -37,7 +40,6 @@ AppDataSource.initialize().then(() => {
         next(new AppError(404, `Route ${req.originalUrl} not found`))
     })
 
-    // GLOBAL ERROR HANDLER
     app.use(
         (error: AppError, req: Request, res: Response, next: NextFunction) => {
           error.status = error.status || 'error';

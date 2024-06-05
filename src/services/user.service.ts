@@ -14,3 +14,7 @@ export const findUserById = async ({id}: {id: string}) => {
 export const createNewUser = async (input: Partial<User>) => {
     return await userRepository.save(userRepository.create(input))
 }
+
+export const findUser = (query: Object) => {
+    return userRepository.findOneBy(query)
+}

@@ -3,7 +3,8 @@ import {
     login,
     registerHandler,
     logout,
-    test
+    test,
+    verifyEmailHandler
 } from '../controllers/auth.controller'
 import {createUserSchema} from '../schemas/user.schema'
 import { validate } from '../middlewares/validate'
@@ -18,6 +19,8 @@ router.route('/login')
 router.route('/logout')
         .post(deserializeUser, logout)
 
+
+router.get('/verifyEmail/:verificationCode', verifyEmailHandler);
         
 router.route('/test')
         .post(test)

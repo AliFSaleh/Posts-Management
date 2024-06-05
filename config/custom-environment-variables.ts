@@ -13,5 +13,12 @@ export default {
     emailFrom: 'EMAIL_FROM',
 
     jwtAccessToken: 'JWT_SECRET_TOKEN',
+
+    smtp: {
+      host: 'EMAIL_HOST',
+      pass: 'EMAIL_PASS',
+      port: 'EMAIL_PORT',
+      user: 'EMAIL_USER',
+    },
   };
   

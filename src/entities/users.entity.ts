@@ -76,8 +76,8 @@ export class User extends model {
             .digest('hex')
 
         return { verificationCode, hashedVerificationCode };
-    } 
-
+    }
+    
     toJson() {
         return {
             ...this,
