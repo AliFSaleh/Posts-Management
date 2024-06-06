@@ -3,12 +3,15 @@ import {
     Column,
     BeforeInsert,
     Index,
-    OneToMany
+    OneToMany,
+    ManyToMany
 } from 'typeorm'
 import model from './model.entity';
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import { Post } from './posts.entity';
+import { Package } from './package.entity';
+import { Subscription } from './subscription.entity';
 
 export enum RoleEnumType {
     USER = 'user',
@@ -54,6 +57,9 @@ export class User extends model {
 
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[]
+
+    @ManyToMany(() => Package, (relatedPackage) => relatedPackage.subscribers)
+    subscriptions: Subscription[]
 
     @BeforeInsert()
     async hasPassword(){
