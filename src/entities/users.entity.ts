@@ -4,7 +4,8 @@ import {
     BeforeInsert,
     Index,
     OneToMany,
-    ManyToMany
+    ManyToMany,
+    MoreThan
 } from 'typeorm'
 import model from './model.entity';
 import bcrypt from 'bcryptjs'
@@ -12,6 +13,7 @@ import crypto from 'crypto'
 import { Post } from './posts.entity';
 import { Package } from './package.entity';
 import { Subscription } from './subscription.entity';
+import { AppDataSource } from '../utils/data-source';
 
 export enum RoleEnumType {
     USER = 'user',
@@ -58,8 +60,8 @@ export class User extends model {
     @OneToMany(() => Post, (post) => post.user)
     posts: Post[]
 
-    @ManyToMany(() => Package, (relatedPackage) => relatedPackage.subscribers)
-    subscriptions: Subscription[]
+    @OneToMany(() => Subscription, subscriptions => subscriptions.user)
+    subscriptions: Subscription[];
 
     @BeforeInsert()
     async hasPassword(){
@@ -82,6 +84,31 @@ export class User extends model {
             .digest('hex')
 
         return { verificationCode, hashedVerificationCode };
+    }
+
+    static async activeSubscription (userId: string) {
+        const subscriptionRepository = AppDataSource.getRepository(Subscription)
+        const milliseconds = Date.now();
+
+        const start_date = new Date(milliseconds);
+        
+        const year = start_date.getFullYear();
+        const month = start_date.getMonth() + 1;
+        const day = start_date.getDate();
+        
+        const today = `${year}-${month}-${day}`;
+        const test = new Date (today)
+
+        console.log(start_date, today, test);
+        console.log('111111111111111111111111111111111111111111111111111111111');
+        
+
+        return await subscriptionRepository.findOne({
+            where: {
+                user_id: userId,
+                end_date: MoreThan(start_date)
+            }
+        })
     }
     
     toJson() {

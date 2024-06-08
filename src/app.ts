@@ -10,6 +10,7 @@ import { AppDataSource } from './utils/data-source';
 import authRouter from './routes/auth.route'
 import userRouter from './routes/user.route'
 import packagesRouter from './routes/package.route'
+import subscriptionRouter from './routes/subscription.route'
 import postRouter from './routes/post.route'
 
 import AppError from './utils/appError';
@@ -36,6 +37,7 @@ AppDataSource.initialize().then(() => {
     app.use('/api/users', userRouter)
     app.use('/api/packages', packagesRouter)
     app.use('/api/posts', postRouter)
+    app.use('/api/subscriptions', subscriptionRouter)
 
     
     app.all('*', (req: Request, res: Response, next: NextFunction) => {

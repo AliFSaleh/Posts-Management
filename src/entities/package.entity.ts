@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToMany } from "typeorm";
+import { Entity, Column, ManyToMany, OneToMany } from "typeorm";
 import model from './model.entity'
 import { User } from "./users.entity";
 import { Subscription } from "./subscription.entity";
@@ -15,6 +15,6 @@ export class Package extends model {
     @Column()
     price: number
 
-    @ManyToMany(() => User, (user)=> user.subscriptions)
-    subscribers: Subscription[]
+    @OneToMany(() => Subscription, subscriptions => subscriptions.package)
+    subscriptions: Subscription[];
 }

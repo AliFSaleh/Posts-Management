@@ -4,6 +4,7 @@ import {
     deletePackageHandler,
     getPackageHandler,
     getPackagesHandler,
+    subscribePackageHandler,
     updatePackageHandler
 } from '../controllers/package.controller'
 import { deserializeUser } from '../middlewares/deserializeUser'
@@ -26,5 +27,8 @@ router.route('/:packageId')
         .get(getPackageHandler)
         .patch(validate(updatePackageSchema), updatePackageHandler)
         .delete(deletePackageHandler)
+
+
+router.post('/:packageId/subscribe', subscribePackageHandler)
 
 export default router 
