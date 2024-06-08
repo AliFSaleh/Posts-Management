@@ -99,10 +99,6 @@ export class User extends model {
         const today = `${year}-${month}-${day}`;
         const test = new Date (today)
 
-        console.log(start_date, today, test);
-        console.log('111111111111111111111111111111111111111111111111111111111');
-        
-
         return await subscriptionRepository.findOne({
             where: {
                 user_id: userId,

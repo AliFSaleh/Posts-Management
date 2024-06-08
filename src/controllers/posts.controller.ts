@@ -3,6 +3,7 @@ import { findUserById } from "../services/user.service";
 import { createPost, findPostById, findPosts } from "../services/post.service";
 import multer from "multer";
 import AppError from "../utils/appError";
+import { User } from "../entities/users.entity";
   
 const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -33,6 +34,11 @@ export const createPostHandler = async(
 ) => {
     try {        
         const user = await findUserById(res.locals.userId)
+
+        const active_subscription = await User.activeSubscription(user!.id)
+        if(!active_subscription){
+          return next(new AppError(400, 'You have not an active subscription!'))
+        }
 
         const post = await createPost(req.body, user!)
     
