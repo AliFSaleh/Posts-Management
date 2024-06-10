@@ -1,4 +1,4 @@
-import { number, object, string } from "zod";
+import { number, object, string, TypeOf } from "zod";
 
 export const CreatePackageSchema = object({
     body: object({
@@ -23,3 +23,5 @@ export const updatePackageSchema = object({
         price: number()
     }).partial()
 })
+
+export type createPackageInput = TypeOf<typeof CreatePackageSchema>['body']

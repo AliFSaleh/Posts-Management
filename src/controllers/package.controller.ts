@@ -8,12 +8,13 @@ import AppError from "../utils/appError";
 import { findUserById } from "../services/user.service";
 import { AppDataSource } from "../utils/data-source";
 import { Subscription } from "../entities/subscription.entity";
+import { createPackageInput } from "../schemas/package.schema";
 
 const subscription_repository = AppDataSource.getRepository(Subscription)
 
 
 export const createPackageHandler = async (
-    req: Request,
+    req: Request<createPackageInput>,
     res: Response,
     next: NextFunction
 ) => {

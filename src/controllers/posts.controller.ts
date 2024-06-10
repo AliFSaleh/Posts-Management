@@ -4,6 +4,7 @@ import { createPost, findPostById, findPosts } from "../services/post.service";
 import multer from "multer";
 import AppError from "../utils/appError";
 import { User } from "../entities/users.entity";
+import { CreatePostInput, UpdatePostInput } from "../schemas/post.schema";
   
 const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -28,7 +29,7 @@ export const resetValue = (req: Request, res:Response, next: NextFunction) => {
 }
 
 export const createPostHandler = async(
-    req: Request,
+    req: Request<CreatePostInput>,
     res: Response,
     next: NextFunction
 ) => {
@@ -41,7 +42,7 @@ export const createPostHandler = async(
         }
 
         const post = await createPost(req.body, user!)
-    
+
         res.status(201).json({
             status: 'success',
             data: {
