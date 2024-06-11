@@ -12,6 +12,8 @@ import userRouter from './routes/user.route'
 import packagesRouter from './routes/package.route'
 import subscriptionRouter from './routes/subscription.route'
 import postRouter from './routes/post.route'
+import stripeRouter from './routes/stripe.route'
+import webhookRouter from './routes/webhook.route'
 
 import AppError from './utils/appError';
 
@@ -38,6 +40,8 @@ AppDataSource.initialize().then(() => {
     app.use('/api/packages', packagesRouter)
     app.use('/api/posts', postRouter)
     app.use('/api/subscriptions', subscriptionRouter)
+    app.use('/create-checkout-session', stripeRouter)
+    app.use('/webhook', webhookRouter)
 
     
     app.all('*', (req: Request, res: Response, next: NextFunction) => {

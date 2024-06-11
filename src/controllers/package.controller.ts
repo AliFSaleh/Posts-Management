@@ -8,13 +8,15 @@ import AppError from "../utils/appError";
 import { findUserById } from "../services/user.service";
 import { AppDataSource } from "../utils/data-source";
 import { Subscription } from "../entities/subscription.entity";
-import { createPackageInput } from "../schemas/package.schema";
+import Stripe from "stripe";
+import { createPackageInput, createSessionInput } from "../schemas/package.schema";
 
+const stripe_secret_key = process.env.STRIPE_SECRET as string
 const subscription_repository = AppDataSource.getRepository(Subscription)
 
 
 export const createPackageHandler = async (
-    req: Request<createPackageInput>,
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
@@ -119,6 +121,103 @@ export const deletePackageHandler = async (
         next(err)
     }
 }
+
+export const createSessionHandler = async(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const userId = res.locals.userId as string
+    const packageId = req.body.packageId as string
+
+    const user = await findUserById({id: userId})
+    const selectedPackage = await findPackageById(packageId)
+    if(!user){
+        return next(new AppError(404, 'User Not found'));
+    }
+    if(!selectedPackage){
+        return next(new AppError(404, 'Package with that ID not found'));
+    }
+
+    const stripe = new Stripe(stripe_secret_key)
+    const description = `Now you can be active ${selectedPackage.days} days`    
+
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        metadata: {
+            userId: user.id,
+        },
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: selectedPackage.title,
+                description: description,
+              },
+              unit_amount: selectedPackage.price * 100, // Price in cents
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: 'http://localhost:3000/success',
+        cancel_url: 'http://localhost:3000/cancel', 
+    });
+
+    res.status(200).json({
+        status: 'SUCCESS',
+        data:{
+            session
+        }
+    })
+}
+
+export const webhookHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+
+    console.log('wwwwwwweeeeeebbbbbbbbhhhhhhhhooooooooccccckkkkkkkk');
+    console.log('222222222222222222222222222222222222222222222222222222');
+    
+    
+    // const sig = req.headers['stripe-signature'];
+    // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET; // Replace with your webhook secret
+    // const stripe = new Stripe(stripe_secret_key)
+
+    // let event;
+
+    // try {
+    //     event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret!);
+    // } catch (err: any) {
+    //     console.error('Webhook error:', err);
+    //     res.status(400).send(`Webhook Error: ${err.message}`);
+    //     return;
+    // }
+
+    // if (event.type === 'checkout.session.completed') {
+    //     const subscription = event.data.object.subscription;
+
+    //     // Access subscription details and complete subscription operation for user
+    //     // console.log('Subscription created! Subscription ID:', subscription.id);
+    //     // Update user account or database based on subscription details
+
+    //     res.sendStatus(200);
+    // } else {
+    //     console.warn('Unhandled Stripe webhook event:', event.type);
+    //     res.sendStatus(200); // Acknowledge Stripe regardless of event type
+    // }
+}
+
+
+
+
+
+
 
 export const subscribePackageHandler = async (
     req: Request,

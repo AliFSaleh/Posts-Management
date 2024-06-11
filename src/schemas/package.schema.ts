@@ -16,7 +16,14 @@ export const CreatePackageSchema = object({
     })
 })
 
+const params = {
+    params: object({
+      packageId: string(),
+    }),
+};
+
 export const updatePackageSchema = object({
+    ...params,
     body: object({
         title: string(),
         days: number(),
@@ -24,4 +31,10 @@ export const updatePackageSchema = object({
     }).partial()
 })
 
+export const createSessionSchema = object({
+    ...params
+})
+
 export type createPackageInput = TypeOf<typeof CreatePackageSchema>['body']
+export type updatePackageInput = TypeOf<typeof updatePackageSchema>
+export type createSessionInput = TypeOf<typeof createSessionSchema>
