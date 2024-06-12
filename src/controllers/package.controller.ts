@@ -178,39 +178,33 @@ export const webhookHandler = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+) => {    
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET; // Replace with your webhook secret
+    const stripe = new Stripe(stripe_secret_key)
 
+    let event;
 
-    console.log('wwwwwwweeeeeebbbbbbbbhhhhhhhhooooooooccccckkkkkkkk');
-    console.log('222222222222222222222222222222222222222222222222222222');
-    
-    
-    // const sig = req.headers['stripe-signature'];
-    // const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET; // Replace with your webhook secret
-    // const stripe = new Stripe(stripe_secret_key)
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret!);
+    } catch (err: any) {
+        console.error('Webhook error:', err);
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
 
-    // let event;
+    if (event.type === 'checkout.session.completed') {
+        const subscription = event.data.object.subscription;
 
-    // try {
-    //     event = stripe.webhooks.constructEvent(req.body, sig!, endpointSecret!);
-    // } catch (err: any) {
-    //     console.error('Webhook error:', err);
-    //     res.status(400).send(`Webhook Error: ${err.message}`);
-    //     return;
-    // }
+        // Access subscription details and complete subscription operation for user
+        // console.log('Subscription created! Subscription ID:', subscription.id);
+        // Update user account or database based on subscription details
 
-    // if (event.type === 'checkout.session.completed') {
-    //     const subscription = event.data.object.subscription;
-
-    //     // Access subscription details and complete subscription operation for user
-    //     // console.log('Subscription created! Subscription ID:', subscription.id);
-    //     // Update user account or database based on subscription details
-
-    //     res.sendStatus(200);
-    // } else {
-    //     console.warn('Unhandled Stripe webhook event:', event.type);
-    //     res.sendStatus(200); // Acknowledge Stripe regardless of event type
-    // }
+        res.sendStatus(200);
+    } else {
+        console.warn('Unhandled Stripe webhook event:', event.type);
+        res.sendStatus(200); // Acknowledge Stripe regardless of event type
+    }
 }
 
 
