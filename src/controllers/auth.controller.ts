@@ -55,7 +55,7 @@ export const registerHandler = async (
         await newUser.save();
 
         const origin = config.get<string>('origin')
-        const url = `${origin}/verifyEmail/${verificationCode}`
+        const url = `${origin}/api/auth/verifyEmail/${verificationCode}`
         
         try {
             await new Email(newUser, url).sendVerificationCode()
@@ -166,7 +166,7 @@ export const verifyEmailHandler = async (
         const user = await findUser({ verificationCode });
 
         if (!user) {
-        return next(new AppError(401, 'Could not verify email'));
+            return next(new AppError(401, 'Could not verify email'));
         }
 
         user.verified = true;

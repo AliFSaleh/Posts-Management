@@ -34,17 +34,13 @@ export default class Email {
     }
 
     private async send (template: string, subject: string) {
-        console.log(1111111111);
         const testUrl = path.join(__dirname, `../views/${template}.pug`)
-        console.log(testUrl);
         
         const html = pug.renderFile(testUrl, {
-            firstName: 'ali',
-            subject: 'test',
-            url: 'ssss',
+            firstName: this.firstName,
+            subject: subject,
+            url: this.url,
         })
-
-        console.log(222222222222);
 
         const mailOptions = {
             from: this.from,
@@ -54,8 +50,7 @@ export default class Email {
             html,
         };
 
-        const info = await this.newTransport().sendMail(mailOptions);
-        console.log(nodemailer.getTestMessageUrl(info));
+        await this.newTransport().sendMail(mailOptions);
     }
 
     async sendVerificationCode() {
