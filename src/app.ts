@@ -16,7 +16,9 @@ import stripeRouter from './routes/stripe.route'
 import webhookRouter from './routes/webhook.route'
 
 import AppError from './utils/appError';
+import validateEnv from './utils/validateEnv';
 
+validateEnv();
 AppDataSource.initialize().then(() => {
     const app = express();
     const port = process.env.APP_PORT
